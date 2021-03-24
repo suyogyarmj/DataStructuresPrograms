@@ -9,77 +9,97 @@
 */
 
 #include <iostream>
-#include <list>
-
+#include <time.h>
 using namespace std;
 
-// linked list node
-class Node
-{
-    public: 
-    int data;
-    Node* next;
+class node {
+public:
+	int data;
+	node* next;
 };
 
-// function to create new node
-Node* newNode (int key)
-{
-    Node *temp = new Node;
-    temp -> data = key;
-    temp -> next = NULL;
-    return temp;
+node* BuildListForward(int size);
+void PrintList(node* val);
+void sort(node* head);
+void sortAscendingOrder(node* head);
+
+
+int main() {
+	srand(time(nullptr));
+	const int const size = 100;
+
+	node* list = BuildListForward(size);
+	PrintList(list);
+	sort(list);
+	sortAscendingOrder(list);
+	PrintList(list);
+
+	return 0;
 }
 
-// function that lists odd numbers first and then even numbers
-void sortList (Node * head)
-{
-    if (head == NULL)
-    {
-        cout<<"List is empty"<<endl;
-    }
-    Node *current = head -> next;
-    Node *previous = head;
+//Traverses the list and swaps an even number with an odd number.
+void sort(node* head) {
+	node* curr, * ptr;
+	ptr = head;
+	curr = head->next;
 
-    while(current != NULL)
-    {
-        if(current->data % 2 == 0)
-        {
-            previous->next = current->next;
-            current->next = head;
-            head = current;
-        } else
-        {
-            previous = previous->next;
-        }
-        current = previous->next;
-    }
+	for (curr = head; curr != nullptr; curr = curr->next) {
+		for (ptr = curr->next; ptr != nullptr; ptr = ptr->next)
+		{
+			if (curr->data % 2 == 0 && ptr->data % 2 != 0) {
+				swap(curr->data, ptr->data);			
+			}	
+		}
+	}
+	
+}
+//Sorts odd section first by swapping adjacent elements and then does the same for
+//even numbers.
+void sortAscendingOrder(node* head) {
+	node* curr, * ptr;
+	ptr = head;
+	curr = head->next;
+
+	for (curr = head; curr != nullptr; curr = curr->next) {
+		for (ptr = curr->next; ptr != nullptr; ptr = ptr->next)
+		{
+			if (curr->data %2!=0 && ptr->data % 2 != 0 && curr->data > ptr->data ||
+				curr->data % 2 == 0 && ptr->data % 2 == 0 && curr->data > ptr->data) {
+				swap(curr->data, ptr->data);
+			}
+		}
+	}
+}
+//Builds a list and assigns random numbers.
+node* BuildListForward(int size) {
+	node* first, * last, * newNode;
+
+	first = last = nullptr;
+
+	for (int i = 0; i < size; i++) {
+
+		newNode = new node;
+		newNode->data = rand() % size + 1;;
+		newNode->next = nullptr;
+
+		if (first == nullptr) {
+			first = last = newNode;
+		}
+		else {
+			last->next = newNode;
+			last = newNode;
+		}
+	}
+	return first;
 }
 
-void printList (Node* node)
-{
-    while (node != NULL)
-    {
-        cout << node->data <<",";
-        node = node->next;
-    }
-    cout << "NULL" <<endl;
-}
+//Prints a list and stops when current is null.
+void PrintList(node* val) {
+	node* current = val;
 
-int main() 
-{ 
-    Node* head = newNode(1); 
-    head->next = newNode(2); 
-    head->next->next = newNode(3); 
-    head->next->next->next = newNode(4); 
-    head->next->next->next->next = newNode(5); 
-  
-    cout << "Given Linked List\n"; 
-    printList(head); 
-  
-    sortList(head); 
-  
-    cout << "\nModified Linked List\n"; 
-    printList(head); 
-  
-    return 0; 
-} 
+	while (current != nullptr) {
+		cout << current->data << " ";
+		current = current->next;
+	}
+	cout << endl << endl;
+}
